@@ -1,11 +1,19 @@
 'use client';
 
 import { useState, useRef } from 'react';
+import styles from './index.module.css';
+
+
+interface Step {
+  tool: string;
+  result: string;
+}
 
 export default function Ask() {
   const [input, setInput] = useState('');
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant'; content: string }[]>([]);
   const [loading, setLoading] = useState(false);
+  const [step, setStep] = useState<Step>();
   // 保存取消控制器
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -19,12 +27,12 @@ export default function Ask() {
 
     //创建一个空的 AI 消息占位
     setMessages((prev) => [...prev, { role: 'assistant', content: '' }]);
-
+    debugger
     try {
       // 创建 AbortController
       const controller = new AbortController();
       abortControllerRef.current = controller;
-      const response = await fetch('http://localhost:8000/rag/ask', {
+      const response = await fetch('http://localhost:8000/rag/agent', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ question: input }),
@@ -44,29 +52,32 @@ export default function Ask() {
       let fullContent = '';
 
       while (true) {
-        debugger
+
         const { done, value } = await reader.read();
         if (done) break;
         // 保留未完成的多字节字符，等待下一个数据块到达时再补全·
-        debugger
         buffer += decoder.decode(value, { stream: true });
-        debugger
 
         const lines = buffer.split('\n');
-        debugger
 
         buffer = lines.pop() || '';
         // 每次的lines长度不同，是tcp的流协议，Nagle （内购）算法会把多个小包合并成大包再发送。
-        debugger
 
         for (const line of lines) {
-          debugger
-
           if (line.startsWith('data: ')) {
             const dataStr = line.slice(6);
+
             try {
               const data = JSON.parse(dataStr);
+              debugger
+              if (data.type === "step") {
+                setStep({
+                  tool: data.tool,
+                  result: data.result,
+                });
+              }
               if (data?.content) {
+                setStep(undefined)
                 const content = data?.content;
                 fullContent += content;
                 // 逐字更新最后一条 AI 消息
@@ -202,7 +213,12 @@ export default function Ask() {
                 }}
               >
                 <strong>{msg.role === 'user' ? '我' : 'AI'}：</strong>
-                {msg.content || (msg.role === 'assistant' && <span style={{ opacity: 0.6 }}>⏳ 思考中...</span>)}
+                {msg.content || (msg.role === 'assistant' && <><span style={{ opacity: 0.6 }}>⏳ 思考中...</span>
+                  <span className={styles.step_icon}>🔧</span>
+                  <span className={styles.step_tool}>{step?.tool}</span>
+                  <span className={styles.step_result}>{step?.result}</span>
+                </>)}
+
               </div>
               {msg.role === 'assistant' && <button onClick={() => copyMessage(msg.content)}>复制 AI 回复</button>}
             </div>

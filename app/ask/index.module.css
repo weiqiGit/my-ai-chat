@@ -1,0 +1,55 @@
+.steps_area {
+    margin-bottom: 12px;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    min-height: 40px;
+}
+
+.thinking {
+    color: #888;
+    font-style: italic;
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.step_item {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 14px;
+    color: #333;
+}
+
+.step_tool {
+    font-weight: 600;
+    color: #0070f3;
+}
+
+.step_result {
+    color: #666;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+}
+
+.answer_area {
+    padding: 12px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+    min-height: 60px;
+}
+
+.answer_text {
+    font-size: 16px;
+    line-height: 1.6;
+}

@@ -57,7 +57,7 @@ export default function Wiki() {
             const res = await fetch('http://localhost:8000/rag/files');
             const result = await res.json();
             if (result.code === 0) {
-                const files = result.data.files.map((item: any, index: number) => ({
+                const files = result.data?.map((item: any, index: number) => ({
                     key: String(index),
                     name: item.name,
                 }));
