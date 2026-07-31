@@ -6,7 +6,6 @@ import styles from './index.module.css';
 
 interface Step {
   tool: string;
-  result: string;
 }
 
 export default function Ask() {
@@ -70,10 +69,9 @@ export default function Ask() {
             try {
               const data = JSON.parse(dataStr);
               debugger
-              if (data.type === "step") {
+              if (data.type === "tool_call") {
                 setStep({
                   tool: data.tool,
-                  result: data.result,
                 });
               }
               if (data?.content) {
@@ -215,8 +213,7 @@ export default function Ask() {
                 <strong>{msg.role === 'user' ? '我' : 'AI'}：</strong>
                 {msg.content || (msg.role === 'assistant' && <><span style={{ opacity: 0.6 }}>⏳ 思考中...</span>
                   <span className={styles.step_icon}>🔧</span>
-                  <span className={styles.step_tool}>{step?.tool}</span>
-                  <span className={styles.step_result}>{step?.result}</span>
+                  <span className={styles.step_tool}>{step?.tool}...</span>
                 </>)}
 
               </div>
