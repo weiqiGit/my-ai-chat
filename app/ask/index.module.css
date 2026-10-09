@@ -53,3 +53,23 @@
     font-size: 16px;
     line-height: 1.6;
 }
+
+.flexBox {
+    display: flex;
+    flex-direction: row;
+    gap: 12px;
+
+}
+
+.assistantBox {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: 16px;
+    color: rgb(15, 17, 21)
+}
+
+.assistantStatus {
+    color: #888;
+    font-size: 14px;
+}
